@@ -69,3 +69,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and continuous deployment (CI/CD). The pipeline defined in `.github/workflows/docker-publish.yml` automatically builds, verifies (using Dive to ensure image efficiency), and pushes a Docker image to Docker Hub upon pushing or tagging on the `main` branch. 
+
+### Prerequisites
+
+To successfully run the GitHub Actions pipeline, the following secrets must be set in your GitHub repository:
+
+- `DOCKERHUB_USERNAME`: Your Docker Hub username.
+- `DOCKERHUB_TOKEN`: Your Docker Hub access token.
+
+The workflow directly reads these repository secrets without relying on hardcoded environment variables.
