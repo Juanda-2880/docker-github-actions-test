@@ -50,11 +50,14 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Verify image efficiency with Dive
-        uses: yuichielectric/dive-action@v0.0.4
-        with:
-          image: rick-morty-app:verify
-          lowest-efficiency: 0.8
-          highest-user-wasted-percent: 0.2
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            wagoodman/dive:latest \
+            --ci \
+            --lowestEfficiency=0.8 \
+            --highestUserWastedPercent=0.2 \
+            rick-morty-app:verify
 
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
