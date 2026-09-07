@@ -14,8 +14,8 @@ permissions:
   contents: read
 
 env:
-  # Fallback to hardcoded 'juanda2880' if the secret is empty
-  DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_USERNAME || 'juanda2880' }}
+  # Fallback to hardcoded 'juandau2880' if the secret is empty
+  DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_USERNAME || 'juandau2880' }}
 
 jobs:
   build-and-push:
