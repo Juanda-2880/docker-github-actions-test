@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build-and-push:
-    name: Build & Push Docker Image
+    name: Build, Verify & Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -39,6 +39,23 @@ jobs:
             type=semver,pattern={{version}}
             type=sha,format=short
 
+      - name: Build local image for verification
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          tags: rick-morty-app:verify
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify image efficiency with Dive
+        uses: yuichielectric/dive-action@v0.0.4
+        with:
+          image: rick-morty-app:verify
+          lowest-efficiency: 0.8
+          highest-user-wasted-percent: 0.2
+
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
@@ -46,13 +63,13 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Push Docker image
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
