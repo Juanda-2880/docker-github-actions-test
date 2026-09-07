@@ -13,10 +13,6 @@ on:
 permissions:
   contents: read
 
-env:
-  # Fallback to hardcoded 'juandau2880' if the secret is empty
-  DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_USERNAME || 'juandau2880' }}
-
 jobs:
   build-and-push:
     name: Build, Verify & Push Docker Image
@@ -56,7 +52,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKER_USER }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
@@ -67,7 +63,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ env.DOCKER_USER }}/rick-morty-app:main
-            ${{ env.DOCKER_USER }}/rick-morty-app:latest
-            ${{ env.DOCKER_USER }}/rick-morty-app:sha-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/rick-morty-app:main
+            ${{ secrets.DOCKERHUB_USERNAME }}/rick-morty-app:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/rick-morty-app:sha-${{ github.sha }}
           cache-from: type=gha
